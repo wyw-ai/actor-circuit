@@ -9,13 +9,15 @@ Use the L0/L1/L2 model as a vocabulary for reasoning about collaboration. Preser
 
 Read [references/layers.md](references/layers.md) for the layer boundaries and maturity of the model.
 
-Read [references/l0.md](references/l0.md) whenever the task involves identifying Actors, decomposing or composing collaboration logic, distinguishing gates, reviewing responsibility and continuation flow, or assessing whether a circuit is semantically complete.
+Read [references/actor.md](references/actor.md) whenever the task depends on deciding what participates as an Actor or where an Actor boundary lies.
+
+Read [references/l0.md](references/l0.md) whenever the task involves collaboration-state transitions, gates, circuits, path shape, responsibility flow, waiting, convergence, repetition, or termination.
 
 Treat L0 as the current defined scope. Treat L1 and L2 as previews: identify dependencies on them, but do not invent a finished protocol or system taxonomy on behalf of this project.
 
 Keep these distinctions explicit:
 
-- An Actor is an active collaboration boundary, not a technology category.
+- The Actor model is an unnumbered foundation, not part of L0.
 - A gate is a stable collaboration-state transition; a circuit is a composition of gates.
 - A topology is not complete until its continuation, ownership, waiting, convergence, and termination semantics are clear.
 - A circuit or named orchestration structure is not automatically a collaboration design pattern.
