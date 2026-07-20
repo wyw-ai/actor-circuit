@@ -1,0 +1,4 @@
+interface:
+  display_name: "Analyze Actor Circuits"
+  short_description: "Analyze Multi-Actor collaboration as logic circuits"
+  default_prompt: "Use $analyze-actor-circuits to analyze this collaboration design across L0, L1, and L2."
