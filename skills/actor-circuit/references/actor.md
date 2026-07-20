@@ -38,6 +38,16 @@ A participant can be treated as an Actor at a chosen level of abstraction when t
 
 Actor is therefore not a fixed technology type. It is a modeling boundary selected for the collaboration being described.
 
+The same technology can fall on either side of that boundary:
+
+```text
+Agent → internal library call
+        The library stays inside the Agent boundary.
+
+Agent → request → remote Service → observable outcome
+                  The Service can be modeled as an Actor.
+```
+
 ## Static definitions and active Actors
 
 A type, source file, configuration, or role description is not an active Actor by itself.
