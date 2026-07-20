@@ -10,7 +10,7 @@ The project currently organizes the problem into three layers:
 
 ## Skill
 
-[Analyze Actor Circuits](skills/analyze-actor-circuits/SKILL.md) helps an AI Agent analyze, explain, design, and review Multi-Actor collaboration using the L0/L1/L2 model.
+[Actor Circuit](skills/actor-circuit/SKILL.md) gives an AI Agent the L0/L1/L2 vocabulary for understanding, explaining, designing, and reviewing Multi-Actor collaboration.
 
 The first release intentionally provides semantic references rather than a fixed workflow, script, CLI, or machine schema. It assumes a capable Agent and supplies the domain model the Agent does not already have.
 

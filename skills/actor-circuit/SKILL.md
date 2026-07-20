@@ -1,9 +1,9 @@
 ---
-name: analyze-actor-circuits
-description: Analyze, explain, design, or review collaboration among humans, AI agents, services, scripts, teams, and workflow instances using the L0/L1/L2 Multi-Actor model. Use for Multi-Agent architecture, orchestration, delegation, handoffs, routing, fan-out/fan-in, waits, retries, termination, responsibility flow, or when deciding whether a named pattern is a primitive gate, a composed circuit, or a complete system.
+name: actor-circuit
+description: Actor-centered vocabulary for understanding, explaining, designing, or reviewing collaboration among humans, AI agents, services, scripts, teams, and workflow instances through the L0/L1/L2 Multi-Actor model. Use for Multi-Agent architecture, orchestration, delegation, handoffs, routing, fan-out/fan-in, waits, retries, termination, responsibility flow, or when distinguishing a primitive gate, a composed circuit, and a complete system.
 ---
 
-# Analyze Actor Circuits
+# Actor Circuit
 
 Use the L0/L1/L2 model as a vocabulary for reasoning about collaboration. Preserve the user's problem and choose the representation that makes the relevant relationships clearest.
 
