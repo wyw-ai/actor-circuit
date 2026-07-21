@@ -11,14 +11,15 @@ Read [references/layers.md](references/layers.md) for the layer boundaries and m
 
 Read [references/actor.md](references/actor.md) whenever the task depends on deciding what participates as an Actor or where an Actor boundary lies.
 
-Read [references/l0.md](references/l0.md) whenever the task involves collaboration-state transitions, gates, circuits, path shape, responsibility flow, waiting, convergence, repetition, or termination.
+Read [references/l0.md](references/l0.md) whenever the task involves collaboration-state transitions, gates, state elements, circuits, path shape, responsibility flow, waiting, convergence, repetition, or termination.
 
 Treat L0 as the current defined scope. Treat L1 and L2 as previews: identify dependencies on them, but do not invent a finished protocol or system taxonomy on behalf of this project.
 
 Keep these distinctions explicit:
 
 - The Actor model is an unnumbered foundation, not part of L0.
-- A gate is a stable collaboration-state transition; a circuit is a composition of gates.
+- A state element records a collaboration fact that later transitions need to observe. In the circuit analogy, it plays a role similar to a register or latch.
+- A gate changes collaboration state. A circuit connects gates, state elements, and possible continuations.
 - A topology is not complete until its continuation, ownership, waiting, convergence, and termination semantics are clear.
 - A circuit or named orchestration structure is not automatically a collaboration design pattern.
 - The underlying gates predate this project. The contribution here is their Actor-centered abstraction, organization, and layering.

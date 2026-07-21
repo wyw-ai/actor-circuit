@@ -25,7 +25,9 @@ Its three core concepts are:
 
 - **Collaboration State** — the state visible to collaboration logic;
 - **Gate** — a stable state transition;
-- **Circuit** — a composition of gates.
+- **Circuit** — connected gates, State Elements, and continuations.
+
+Collaboration State can be decomposed into named **State Elements** such as continuation, ownership, active branches, waiting conditions, partial completions, and round counters. In the circuit analogy, they play a role similar to registers or latches.
 
 L0 observes changes in path shape, responsibility, and lifecycle. It describes Sequence, Branch, Fan-out, Fan-in, Route, Call, Delegate, Transfer, Wait, Stop, and related semantics without specifying transport or runtime implementation.
 
@@ -43,11 +45,13 @@ Its expected responsibilities include:
 - task, branch, round, correlation, and causation identity;
 - context and result carriage;
 - responsibility-transfer acceptance;
-- offline delivery, persistence, resumption, and recovery;
+- offline delivery and resumption signals;
 - cancellation, duplication, idempotency, and late-result handling;
 - permissions and observable lifecycle events.
 
-L0 can reveal an L1 requirement without defining its mechanism. Fan-out followed by Fan-in requires branch correlation. Transfer requires observable acceptance. Wait requires a durable resumption signal.
+L0 can reveal an L1 requirement without defining its mechanism. Fan-out followed by Fan-in requires branch correlation. Transfer requires observable acceptance. Wait requires an identifiable resumption signal.
+
+L1 makes collaboration observable across Actor boundaries. It may require state to remain queryable, but it does not choose the persistence backend or provide the entire end-to-end durability guarantee.
 
 The current release must not present a particular wire format or state machine as the finished Open Multi-Actor Protocol.
 
@@ -58,6 +62,19 @@ L2 answers **how Actors, L0 circuits, and L1 communication form a complete Multi
 Names such as Orchestrator–Worker, Group Chat, recursive delegation, and Evaluator–Optimizer belong here. A name alone is not a complete description: an L2 system also needs Actor boundaries, state ownership, circuits, protocol assumptions, convergence rules, failure behavior, and termination conditions.
 
 The current release may recognize candidate L2 structures, but their taxonomy and design guidance remain future work.
+
+## Durable Execution Plane
+
+Durable execution answers **which collaboration facts survive time and failure, and how unfinished execution continues**.
+
+It is an execution concern across the numbered layers:
+
+- L0 identifies the State Elements required by a circuit;
+- L1 gives cross-Actor events, tasks, branches, and transfers stable identity;
+- the runtime persists history, checkpoints, timers, leases, or equivalent recovery information;
+- L2 selects and communicates the end-to-end reliability guarantee.
+
+An in-process circuit may keep its State Elements in memory. A circuit that promises continuity across restarts or infrastructure failure needs an explicit durability boundary and recovery behavior. Concrete databases, logs, queues, and object stores remain runtime choices.
 
 ## Patterns Span the Layers
 

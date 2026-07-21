@@ -18,7 +18,7 @@ Understand the question
 
 Replace research with coding, incident response, approval, or customer support and much of that structure remains unchanged. The same small set of collaboration operations appears repeatedly: continue, branch, fan out, converge, call, delegate, transfer, wait, resume, and stop.
 
-We call these operations **collaboration logic gates**. Connect them and Actors begin to form a circuit.
+We call these operations **collaboration logic gates**. Connect them around collaboration state and Actors begin to form a circuit. Stateful circuits also retain facts such as the current continuation, owner, active branches, waiting condition, and round.
 
 ## Not only Agents
 
@@ -32,7 +32,7 @@ This project uses **Actor** for any independently identifiable collaboration bou
 
 Actor is the foundation, not L0.
 
-## Three layers
+## Three semantic layers
 
 ```text
 Actor foundation
@@ -47,6 +47,8 @@ L1 — Multi-Actor Communication Protocol
 L2 — Multi-Agent Systems
   How Actors, circuits, and protocol form complete systems
 ```
+
+Durable execution runs across these layers. L0 identifies what a circuit must remember, L1 carries identifiable transitions across Actor boundaries, and the runtime decides how state survives time and failure.
 
 The first release defines the Actor foundation and L0. L1 and L2 are intentionally left as previews for future work.
 
