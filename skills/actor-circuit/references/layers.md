@@ -53,7 +53,7 @@ L0 can reveal an L1 requirement without defining its mechanism. Fan-out followed
 
 L1 makes collaboration observable across Actor boundaries. It may require state to remain queryable, but it does not choose the persistence backend or provide the entire end-to-end durability guarantee.
 
-The current release must not present a particular wire format or state machine as the finished Open Multi-Actor Protocol.
+The current release must not present a particular wire format or state machine as a finished universal L1 protocol.
 
 ## L2: Multi-Agent Systems
 

@@ -1,4 +1,4 @@
-# Open Multi-Actor Protocol
+# Actor Circuit
 
 > When Actors become circuits.
 
