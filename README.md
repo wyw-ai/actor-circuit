@@ -52,6 +52,11 @@ Durable execution runs across these layers. L0 identifies what a circuit must re
 
 The first release defines the Actor foundation and L0. L1 and L2 are intentionally left as previews for future work.
 
+## Articles
+
+- [Logic Gates of Multi-Actor Collaboration](docs/01-logic-gates-of-multi-actor-collaboration.md) — the structured L0 article.
+- [When Agents Become Circuits](docs/01-logic-gates-of-multi-actor-collaboration-readable.md) — the narrative version, including stateful circuits and the Durable Execution Plane.
+
 ## Skill
 
 [Actor Circuit](skills/actor-circuit/SKILL.md) gives a capable AI Agent this domain model without prescribing a step-by-step workflow.
