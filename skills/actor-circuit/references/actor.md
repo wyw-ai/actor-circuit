@@ -115,7 +115,7 @@ Actor is an unnumbered foundation:
 ```text
 Actor foundation  defines who can participate
 L0                defines collaboration-state transitions
-L1                carries those transitions across Actor boundaries
+L1                represents circuits and cross-Actor interaction semantics
 L2                composes Actors, circuits, and protocol into systems
 ```
 

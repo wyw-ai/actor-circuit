@@ -4,8 +4,9 @@
 
 This is a working model for organizing Multi-Actor engineering questions, not an established industry standard.
 
-- The **Actor foundation** and **L0** are defined in the current release.
-- **L1** and **L2** currently define scope only. Their detailed specifications remain future work.
+- The **Actor foundation** and **L0** form the defined conceptual core.
+- **L1** has an experimental `v0alpha1` YAML representation for Actor circuits.
+- **L2** currently defines scope only. Its detailed taxonomy remains future work.
 
 ## Foundation: Actor
 
@@ -27,20 +28,31 @@ Its three core concepts are:
 - **Gate** — a stable state transition;
 - **Circuit** — connected gates, State Elements, and continuations.
 
-Collaboration State can be decomposed into named **State Elements** such as continuation, ownership, active branches, waiting conditions, partial completions, and round counters. In the circuit analogy, they play a role similar to registers or latches.
+An L0 Circuit may describe a complete collaboration or only the fragment relevant to a design question. It does not require an executable start node or a globally closed workflow.
 
-L0 observes changes in path shape, responsibility, and lifecycle. It describes Sequence, Branch, Fan-out, Fan-in, Route, Call, Delegate, Transfer, Wait, Stop, and related semantics without specifying transport or runtime implementation.
+Collaboration State can be decomposed into named **State Elements** such as continuation, ownership, pending request/response or outcome boundaries, waiting conditions, retained work results, convergence satisfaction signals, and round counters. In the circuit analogy, they play a role similar to registers or latches.
+
+One L0 Gate occurrence is one committed collaboration-state transition. Long-running interactions remain explicit: Call opens Boundary State, which Return or another declared outcome may resolve; Wait creates Wait State, which Resume or another declared outcome may resolve; Transfer is the ownership commit produced after any required L1 acceptance protocol.
+
+L0 observes changes in Flow, Result Flow, Responsibility, and Lifecycle. Branch selects continuations; Fan-out turns several selected continuations into independently advancing branches. Fan-in observes satisfaction signals through Join State and enables a successor; it does not consume or merge work results. Wait State and Boundary State may have several possible outcomes, but one continuation must not be advanced twice by conflicting outcomes. L1 supplies the concrete identity, correlation, and commit mechanics.
+
+L0 describes Sequence, Branch, Fan-out, Fan-in, Route, Call, Delegate, Transfer, Return, Wait, Resume, Stop, and related semantics without specifying transport or runtime implementation.
 
 Use [l0.md](l0.md) for the current L0 specification.
 
-## L1: Multi-Actor Communication Protocol
+## L1: Actor Circuit Protocol
 
-L1 answers **how an L0 transition is expressed and made reliable across Actor boundaries**.
+L1 answers **how a concrete L0 circuit is represented as structured, state-aware, and time-aware data**.
 
-Its expected responsibilities include:
+Its responsibilities include:
 
+- Actor references and instantiated L0 Gates;
+- process edges and observable outcomes;
+- State Elements and their ephemeral, durable, or external retention requirements;
 - identity and addressing;
 - message and artifact envelopes;
+- synchronous and asynchronous continuation behavior;
+- immediate and store-and-forward delivery;
 - delivery and acknowledgement;
 - task, branch, round, correlation, and causation identity;
 - context and result carriage;
@@ -49,11 +61,13 @@ Its expected responsibilities include:
 - cancellation, duplication, idempotency, and late-result handling;
 - permissions and observable lifecycle events.
 
-L0 can reveal an L1 requirement without defining its mechanism. Fan-out followed by Fan-in requires branch correlation. Transfer requires observable acceptance. Wait requires an identifiable resumption signal.
+L0 defines the semantics; L1 represents their concrete use. When a circuit chooses Fan-out followed by Fan-in, L1 represents Gate instances, process edges, branch identities, retained membership, satisfaction signals, Result State, and a convergence policy. Call and Return remain distinct transitions around Boundary State. A Handoff protocol represents context, delivery, and acceptance before producing the committed L0 Transfer transition.
 
-L1 makes collaboration observable across Actor boundaries. It may require state to remain queryable, but it does not choose the persistence backend or provide the entire end-to-end durability guarantee.
+L1 makes both the collaboration process and its cross-Actor interactions observable. It declares which facts require retention but does not choose the persistence backend or provide the entire end-to-end durability guarantee.
 
-The current release must not present a particular wire format or state machine as a finished universal L1 protocol.
+L1 separates four concerns that should not be collapsed: stable and comparable choices are typed parameters; task-dependent judgement remains in prompts; changing collaboration facts live in state; and evaluation-relevant traces are recorded as evidence. A concrete Circuit resolves parameters and prompts before an evaluation run without pretending that prompt semantics form a universal enum.
+
+The current release provides one readable `kind: gate` YAML per L0 base Gate, separate YAML for selected configured forms, product-independent `kind: circuit` YAML, and product-binding YAML. These artifacts are an evolving interchange model for Humans, Agents, and future CLI tooling, not a finished universal execution or wire protocol. Use [l1.md](l1.md) for the model and its bundled examples.
 
 ## L2: Multi-Agent Systems
 
@@ -70,7 +84,7 @@ Durable execution answers **which collaboration facts survive time and failure, 
 It is an execution concern across the numbered layers:
 
 - L0 identifies the State Elements required by a circuit;
-- L1 gives cross-Actor events, tasks, branches, and transfers stable identity;
+- L1 represents Gate instances and gives state, events, tasks, branches, and transfers explicit retention and interaction semantics;
 - the runtime persists history, checkpoints, timers, leases, or equivalent recovery information;
 - L2 selects and communicates the end-to-end reliability guarantee.
 
@@ -80,4 +94,4 @@ An in-process circuit may keep its State Elements in memory. A circuit that prom
 
 A collaboration design pattern resolves recurring forces by arranging roles, knowledge, authority, commitment, feedback, and exit behavior. It normally includes Context, Forces, Structure, Protocol, and Consequences.
 
-Fan-out/Fan-in is an L0 circuit. Orchestrator–Worker is an L2 composition. Neither becomes a design pattern merely by receiving a name. A real pattern may span the Actor foundation, L0, L1, and L2.
+Fan-out and Fan-in are independent L0 Gates. Using them together forms one possible L0 circuit; neither requires the other. Orchestrator–Worker is an L2 composition. None becomes a design pattern merely by receiving a name. A real pattern may span the Actor foundation, L0, L1, and L2.

@@ -17,9 +17,11 @@ This article calls those operations **logic gates of Multi-Actor collaboration**
 This article discusses only two subjects:
 
 1. what an Actor is;
-2. which collaboration logic gates belong to L0.
+2. how L0 describes a collaboration circuit through Gates, Result Flow, State Elements, and continuations.
 
 Communication protocols, framework implementations, concrete Multi-Agent systems, and design patterns above the gate level are outside its scope.
+
+An L0 circuit may describe a complete collaboration or only the fragment needed to explain one design question. It does not require an executable start node or a globally closed workflow.
 
 ---
 
@@ -68,25 +70,34 @@ Multi-Actor collaboration therefore does not ask how several models chat. It ask
 
 ## 2. What Is a Collaboration Logic Gate?
 
-Let the collaboration state at any moment be `C(t)`.
+Let the collaboration state visible at logical transition `k` be `C_k`. This is an observation order, not a globally synchronized wall clock.
 
 This article does not prescribe where that state lives or which protocol Actors use to exchange information. It may exist in memory, a database, a filesystem, a messaging system, or human understanding.
 
 A collaboration logic gate is a class of stable state transition:
 
 ```text
-g: C(t) → C(t+1)
+g: (C_k, e_k) → (C_k+1, o_k)
 ```
 
-It receives the current work state and one or more inputs, then produces a new state and possible continuations.
+It receives the current collaboration state and an observable event or condition, then commits a new state and a structural Gate outcome.
+
+One Gate occurrence represents one committed transition. Long-running interaction remains visible as several Gates connected through State Elements: Call opens Boundary State and Return or another declared outcome resolves it; Wait creates Wait State and Resume or another declared outcome resolves it. Delivery, acceptance, and correlation may determine whether a transition can commit, but they are not hidden inside the Gate.
+
+Four terms should not be mixed:
+
+- an **event or signal** may enable a Gate;
+- a **Gate outcome** describes its structural result, such as a selected path;
+- a **completion signal** proves that a declared scope reached an outcome;
+- a **work result** is a value, artifact, or reference produced by Actor work.
 
 For example:
 
 - Fan-out expands one work path into several branches;
-- Fan-in converges several branches into one path;
-- Branch selects one of several possible continuations;
+- Fan-in observes declared satisfaction signals and enables one continuation;
+- Branch selects a set of candidate continuations;
 - Transfer moves continuation ownership from one Actor to another;
-- Wait suspends the current path until an external condition becomes true.
+- Wait preserves the current continuation while it awaits one of its declared resolution outcomes.
 
 ### Deciding whether an operation is an L0 gate
 
@@ -98,7 +109,7 @@ Its semantics remain intact when domain terms such as coding, research, support,
 
 #### 2. Semantically stable
 
-It clearly changes something: the number of paths, the selected successor, a waiting condition, or the Actor that owns continuation.
+It clearly changes something: the number of paths, the selected successor, the structural fate of an outcome, a waiting condition, or the Actor that owns continuation.
 
 #### 3. Composable
 
@@ -106,11 +117,11 @@ It can participate in a larger collaboration structure rather than describing on
 
 #### 4. Observable at the boundary
 
-The system can distinguish when the transition starts, when it completes, and which successor states it produces.
+The system can distinguish the fact that enables the transition from the committed state change it produces.
 
 “Impossible to decompose further” is not a criterion here.
 
-Fan-out can be implemented as repeated dispatch. Loop can be expanded into Branch plus a back edge. Retry can be explained as another attempt on a failure branch. If an operation has stable, independent, recurring meaning in collaboration systems, it can still be useful as a named gate.
+Fan-out can be implemented as repeated dispatch. Loop can be expanded into Branch plus a back edge. Retry can be explained as another attempt on a failure branch. A stable recurring concept can remain useful as a configured or derived form without being promoted to a base Gate.
 
 The goal is a practical collaboration vocabulary, not a theoretically minimal machine instruction set.
 
@@ -118,9 +129,16 @@ The goal is a practical collaboration vocabulary, not a theoretically minimal ma
 
 ## 3. L0: Collaboration Logic Gates
 
-The following is a candidate set of L0 gates. It is not a closed standard, but a foundational vocabulary for describing and comparing Multi-Actor systems.
+The following is a candidate L0 vocabulary. Configured and derived forms appear near the base semantics they refine; the heading labels and classification below keep their level explicit.
 
-### 1. Sequence
+| Classification | Members |
+| --- | --- |
+| Base Gates | Sequence, Branch, Fan-out, Fan-in, Route, Call, Delegate, Transfer, Return, Wait, Resume, Stop |
+| Configured or derived forms | Race, Quorum, Simple Merge, Timeout, Cancel, Retry, Loop |
+
+Base Gates are first-class committed transitions. The other names remain useful because they express recurring policies or circuit structures, but they are not peers of every base Gate.
+
+### Sequence — base Flow Gate
 
 A successor may begin only after the current step completes.
 
@@ -138,44 +156,32 @@ complete(A) enables B
 
 A common mistake is to confuse “invoked” with “completed.” In a Multi-Actor environment, sending a request and satisfying a successor condition are different facts.
 
-### 2. Branch
+### Branch — base Flow Gate
 
-Select one or more successor paths according to the current state.
+Select a set of candidate continuations according to the current state.
 
 ```text
-             ┌→ Path A
-Input → Test ├→ Path B
-             └→ Path C
+               ┌→ if A → Candidate path A
+Input → Branch ├→ if B → Candidate path B
+               └→ if C → Candidate path C
 ```
 
 Branch is defined by how a decision changes successor paths, not by who makes that decision.
 
 ```text
-condition(C) → selected continuation
+condition(C) → selected continuation set
 ```
 
-The condition may come from a deterministic rule, a Human decision, an Agent judgment, or an external event. The decision mechanism belongs to a higher level; Branch expresses only the selection.
+The condition may come from a deterministic rule, a Human decision, an Agent judgment, or an external event. The decision mechanism belongs to a higher level; Branch expresses only the selection. The example may select one candidate or a declared subset. When several selected continuations must advance independently, Fan-out performs the path expansion.
 
-### 3. Route
-
-Select an Actor to continue the work according to the objective, capability, content, or current state.
-
-```text
-Work → Route → Actor B
-```
-
-Branch chooses which path to take. Route chooses which Actor continues. They often occur together, but their semantics differ.
-
-Route does not define Actor discovery and does not guarantee delivery. Those concerns belong to the communication protocol and runtime.
-
-### 4. Fan-out
+### Fan-out — base Flow Gate
 
 Expand one input path into multiple work branches that can advance independently.
 
 ```text
-          ┌→ Branch A
-Input ────├→ Branch B
-          └→ Branch C
+          ┌→ Active branch A
+Input ────├→ Active branch B
+          └→ Active branch C
 ```
 
 Core semantics:
@@ -194,9 +200,11 @@ These configurations change branch content and participation, but not the basic 
 
 Fan-out does not imply parallel execution. It says that branches may advance independently; the runtime may run them concurrently or serialize them under resource constraints.
 
-### 5. Fan-in
+Fan-out also does not imply a later Fan-in. A branch may hand its result directly to another Actor, continue through its own circuit, participate in a later convergence, wait, be cancelled, or terminate. Fan-out creates independent paths; it does not decide their eventual relationship.
 
-Converge the states of multiple work branches into one successor path.
+### Fan-in — base Flow Gate
+
+Observe the satisfaction state of multiple declared inputs and enable one successor after a convergence condition is satisfied.
 
 ```text
 Branch A ─┐
@@ -207,25 +215,40 @@ Branch C ─┘
 Core semantics:
 
 ```text
-N branch states → 1 continuation
+N declared inputs → 1 continuation activation
 ```
 
 Fan-in must declare a convergence condition:
 
 - **All**: all designated branches complete;
-- **First**: the first acceptable result arrives;
-- **Quorum**: a specified count or weight is reached;
-- **Best available**: use the best result available at a deadline or budget boundary.
+- **First**: the first acceptable satisfaction signal arrives;
+- **Quorum**: a specified count or weight is reached.
 
-Fan-in decides when and from which branches the circuit continues. It does not automatically decide how content is merged. Concatenation, voting, selection, synthesis, and Reduce are result-processing strategies and should not be hidden inside Fan-in semantics.
+A deadline is an alternative temporal boundary, not another result-selection rule. It may close the observation window and produce a Timeout path. If the circuit then continues with currently available inputs, that relationship and the downstream result-processing rule must remain explicit.
 
-### 6. Race
+Fan-in decides when and from which declared inputs the circuit continues. It does not decide how work results are processed. Concatenation, voting, selecting the best available result, synthesis, and Reduce are downstream result-processing strategies and should not be hidden inside Fan-in semantics.
 
-Let multiple branches compete to satisfy the same continuation condition. The first branch to produce an acceptable result advances the state.
+Fan-in does not require a preceding Fan-out. It may observe any declared set of satisfaction signals or conditions. When signals arrive at different logical transitions, Fan-in processes each qualifying arrival against Join State. An arrival may record progress without enabling anything. For one convergence, only the first transition from unsatisfied to satisfied may fire the successor, and one logical input may satisfy the condition only once:
+
+```text
+Signal A ─┐
+Signal B ─┼→ Fan-in updates Join State ── ready and unfired ─→ enable Next
+Signal C ─┘
+
+Result A ─┐
+Result B ─┼→ Result State ────────────────→ Next reads results
+Result C ─┘
+```
+
+Join State is a logical convergence slot, not a prescribed queue or database. It may reference Result States, but Fan-in neither merges nor consumes their business content. If branches continue independently and no later condition depends on their joint progress, the circuit needs no Fan-in or Join State merely because the work began with Fan-out.
+
+### Race — configured Fan-in policy
+
+Let multiple eligible inputs compete to satisfy the same continuation condition. The first input whose evidence satisfies the acceptance condition produces the qualifying signal that advances the state.
 
 ```text
 A ─┐
-B ─┼→ First acceptable result → Next
+B ─┼→ First qualifying signal → Next
 C ─┘
 ```
 
@@ -233,9 +256,9 @@ Race can be viewed as a common Fan-in policy, but it has important operational s
 
 If the fate of losing branches is undefined, the Race has not actually finished.
 
-### 7. Quorum
+### Quorum — configured Fan-in policy
 
-Allow the successor path to begin when a sufficient number or weight of branches satisfy a condition.
+Allow the successor path to begin when a sufficient number or weight of eligible inputs satisfies a condition.
 
 ```text
 5 actors → 3 confirmations → Continue
@@ -243,37 +266,61 @@ Allow the successor path to begin when a sufficient number or weight of branches
 
 Quorum concerns the convergence threshold, not how opinions are produced. Majority voting, confidence weighting, and test-based adjudication can provide inputs to Quorum, but they are not Quorum itself.
 
-### 8. Call
+### Simple Merge — derived non-synchronizing convergence
 
-One Actor asks another Actor to perform work while retaining continuation ownership.
+Several mutually exclusive incoming paths may share one successor without waiting for one another:
 
 ```text
-Actor A → Call Actor B → Result → Actor A
+Branch
+  ├→ Path A ─┐
+  └→ Path B ─┴→ Next
+```
+
+This is Simple Merge, not Fan-in. It uses no Join State. If several incoming paths may all be active and each arrival should activate Next, that repeated-activation behavior must be stated explicitly.
+
+### Route — base Responsibility Gate
+
+Select an Actor as the candidate for a later responsibility-bearing transition.
+
+```text
+Work → Route → Actor B → Call / Delegate / Transfer
+```
+
+Branch chooses candidate continuations. Route chooses an Actor. They often occur together, but their semantics differ.
+
+Route does not define Actor discovery, guarantee delivery, or change ownership. Those concerns belong to later Gates, the communication protocol, and the runtime.
+
+### Call — base Responsibility Gate
+
+One Actor opens a bounded request/response relationship with another Actor while retaining its continuation.
+
+```text
+Actor A ── Call ──→ Actor B
 ```
 
 Core semantics:
 
 ```text
-control returns to caller
+Call opens Boundary State; one declared outcome resolves it
 ```
 
-The callee may execute an arbitrarily complex process, but from the current path it remains behind a boundary that is expected to return.
+Call creates Boundary State around the called operation. The callee may execute an arbitrarily complex process. A normal Actor-produced outcome uses a separate Return transition; another declared outcome may resolve the same Boundary through a different path. Call does not reassign ownership of a pre-existing work scope.
 
-### 9. Delegate
+### Delegate — base Responsibility Gate
 
-One Actor assigns bounded work to another Actor, making the latter the executor of that work.
+One Actor assigns execution ownership of an explicitly bounded work scope to another Actor.
 
 ```text
 Actor A ──delegate work──→ Actor B
 ```
 
-The difference between Delegate and Call is not merely asynchronous versus synchronous. Call emphasizes nested execution and return. Delegate emphasizes a work commitment that may advance independently.
+Call and Delegate describe different dimensions rather than synchronous and asynchronous variants. Call creates a request/response boundary. Delegate changes the executor of a named work scope. A system may Call without delegating a pre-existing scope, Delegate without waiting for a response, or compose Delegate with Call/Return when the delegator expects an outcome.
 
-Whether the Worker may redelegate, whether the delegator retains final accountability, and how permissions and budgets change are not decided by L0. L0 expresses only that execution ownership changes explicitly.
+Whether the Worker may redelegate, whether the delegator retains final accountability, and how permissions and budgets change are not decided by L0. Any required acceptance precedes the committed execution-ownership change.
 
-### 10. Transfer
+### Transfer — base Responsibility Gate
 
-The current Actor transfers continuation ownership for a piece of work to another Actor.
+The current Actor commits continuation ownership for a piece of work to another Actor.
 
 ```text
 Actor A ──transfer continuation──→ Actor B
@@ -282,20 +329,21 @@ Actor A ──transfer continuation──→ Actor B
 Transfer is not an ordinary call:
 
 ```text
-Call:      A → B → A
-Transfer:  A → B → ...
+Call + Return: A → B → A
+Transfer:      A → B → ...
 ```
 
 After Transfer, Actor B owns continuation for the current path; Actor A is no longer a required node for further progress.
 
-What is usually called a Handoff contains at least one Transfer. How context is packaged, how responsibility is recorded, and how the receiver acknowledges acceptance belong to the L1 communication protocol rather than to the gate itself.
+Transfer is not a proposal, delivery, or acceptance event. What is usually called a Handoff uses an L1 protocol to carry context and obtain any required acceptance; only the declared commit rule produces the L0 Transfer transition.
 
-### 11. Return
+### Return — base Responsibility Gate
 
-An Actor completes a Call or Delegate boundary and returns a result state to a pre-existing continuation point.
+An Actor resolves a Call Boundary State, or an outcome boundary explicitly composed with Delegate, using a completion signal and, when applicable, a work result.
 
 ```text
-Actor B → Return(result) → Actor A / Parent continuation
+Actor B → Return(completed | partial | failed | rejected | blocked | cancelled)
+        → Actor A / Parent continuation
 ```
 
 Return need not contain a successful answer. It may report:
@@ -304,75 +352,36 @@ Return need not contain a successful answer. It may report:
 - partially completed;
 - failed;
 - rejected;
-- blocked.
+- blocked;
+- cancelled;
 
-“The Worker stopped producing output” is not Return. Return must resolve an outstanding Call or Delegate boundary and give the waiting path a distinguishable state.
+“The Worker stopped producing output” is not Return. For Call, Return resolves the caller's declared Boundary. For Delegate, Return is present only when the Circuit also declares an outcome boundary. Timeout or an observed Stop status declared to be boundary-resolving may resolve that Boundary through a different path; a Cancel request by itself does not.
 
-### 12. Wait
+An outcome such as `blocked` resolves the Boundary only when the Circuit declares it terminal for that relationship; otherwise the Boundary remains pending.
 
-Suspend the current path until a specified condition or event appears.
+### Wait — base Lifecycle Gate
+
+Move the current path into a Wait State that preserves its continuation and names its possible resolution outcomes.
 
 ```text
-Current path → Wait(condition) … → Resume
+Current path → Wait for condition
 ```
 
 Waiting is not failure. Waiting for a Human, external Service, another Actor, or a point in time is normal in Multi-Actor collaboration.
 
-Wait must expose an observable condition; otherwise it is only an undiagnosable stall.
+Wait must expose observable outcomes; otherwise it is only an undiagnosable stall. Resume, Timeout, and an observed cancellation outcome are alternatives: after one resolves the Wait, a later conflicting signal cannot advance the same continuation again.
 
-### 13. Timeout
+### Resume — base Lifecycle Gate
 
-When a Wait or another operation exceeds a deadline, produce a timeout result that successor paths can consume.
-
-```text
-Wait ──deadline exceeded──→ Timeout → Branch
-```
-
-Timeout does not inherently mean failure. It is a fact that may trigger cancellation, degradation, Retry, rerouting, or Human intervention.
-
-### 14. Retry
-
-Attempt an operation again under declared conditions and within a declared budget.
+Restore a waiting path from its declared Wait State.
 
 ```text
-Attempt → Failure → Retry → Attempt
+Wait State → Resume(trigger) → Active path
 ```
 
-Retry must say at least:
+Resume must resolve a specific Wait State. Runtime recovery may lead to Resume only when a valid Wait and continuation were preserved; Resume does not invent missing state or assume that the original process, model session, or machine remains alive.
 
-- which operation is retried;
-- which outcomes are retryable;
-- the maximum attempts or budget;
-- whether attempts wait or back off;
-- how effects from earlier attempts are handled.
-
-Formally, Retry can be composed from Branch, Wait, and Loop. Operationally, it remains a stable collaboration concept that needs independent observation and constraints.
-
-### 15. Loop
-
-Repeat a collaboration path until a termination condition holds.
-
-```text
-Execute → Evaluate → Continue?
-   ↑                       │
-   └───────────────────────┘
-```
-
-Loop must have an externally visible termination condition and a bound on rounds, time, or cost. A model deciding that “it can still improve” is not sufficient justification for an infinite loop.
-
-Retry is a local Loop around a failure condition. Evaluator–Optimizer may use a Loop around a quality condition.
-
-### 16. Resume
-
-Restore waiting, suspended, or interrupted work from existing collaboration state.
-
-```text
-Suspended state → Resume(trigger) → Active path
-```
-
-Resume must not assume that the original process, model session, or machine remains alive. It restores the collaboration path, not one concrete runtime instance.
-
-### 17. Stop
+### Stop — base Lifecycle Gate
 
 End the current collaboration scope and produce an explicit terminal state.
 
@@ -386,96 +395,170 @@ Common terminal states include:
 - failed;
 - cancelled;
 - rejected;
-- exhausted.
 
 Stop is not “no Actor is speaking.” Silence cannot distinguish success, failure, abandonment, and disconnection. Termination must be an observable collaboration fact.
 
+Stop affects only its declared scope. Whether related branches, delegated work, or pending boundaries are cancelled, detached, or allowed to continue belongs to the surrounding Circuit or L2 system.
+
+### Timeout — derived resolution
+
+When a Wait or another pending relationship exceeds a deadline, produce an alternative timeout outcome.
+
+```text
+Wait for approval
+  ├─ Approval arrives → Resume → Deploy
+  └─ Deadline passes  → Timeout → Escalate
+```
+
+Timeout resolves the waiting or controlling relationship but does not inherently mean failure or stop the underlying Actor work. The surrounding Circuit decides whether that work is cancelled, retained, or allowed to produce a late result.
+
+### Cancel — derived termination request
+
+Cancel requests that a declared target path or scope terminate outside its normal success path:
+
+```text
+Race winner → Cancel(non-winning branches) → cancellation requested
+Non-winning branch → Stop(cancelled)
+```
+
+The cancellation request and committed Stop are different facts. Cancel defines the target and propagation boundary; L1 and the runtime define delivery, interruption, and cleanup. If another continuation must wait for termination, the Circuit must say so instead of treating the request itself as completion.
+
+### Retry — derived circuit
+
+Attempt an operation again under declared conditions and within a declared attempt limit.
+
+```text
+Attempt → Failure → Retry → Attempt
+```
+
+Retry must say at least:
+
+- which operation is retried;
+- which outcomes are retryable;
+- the maximum attempts;
+- whether attempts wait or back off;
+- how effects from earlier attempts are handled.
+
+Formally, Retry can be composed from Branch, Wait, and Loop. Operationally, it remains a stable collaboration concept that needs independent observation and constraints.
+
+### Loop — derived circuit form
+
+Repeat a collaboration path until a termination condition holds.
+
+```text
+Execute → Evaluate → Exit condition met?
+                    ├→ Yes → Exit Loop → Next
+                    ├→ No, rounds remain → Loop → Execute
+                    └→ No, round limit reached → Stop(not_satisfied)
+```
+
+Loop must have an externally visible termination condition and a bound on rounds, time, or cost. A model deciding that “it can still improve” is not sufficient justification for an infinite loop.
+
+Retry is a local Loop around a failure condition. Evaluator–Optimizer may use a Loop around a quality condition.
+
 ---
 
-## 4. Understanding Gates by Shape
+## 4. Paths, Results, and State Elements
 
-If names are temporarily ignored, these gates can be understood through their path shapes:
+A circuit is not fully described by drawing arrows between gates. It must keep four projections of collaboration state distinguishable:
+
+- **Flow** — which paths exist and which continuation is enabled;
+- **Result Flow** — which work result is consumed directly, retained for later use, used jointly downstream, or given a terminal disposition;
+- **Responsibility** — which Actor owns execution and which Actor owns continuation;
+- **Lifecycle** — whether the work is active, waiting, or terminal.
+
+Control Flow and Result Flow are related, but they are not the same. A branch may finish while its work result remains available for a later consumer. Several completion signals may arrive before a shared continuation becomes enabled. A work result may also be handed off immediately without any convergence.
+
+Facts that later transitions must observe are **State Elements**:
+
+| State Element | What it remembers |
+| --- | --- |
+| Continuation State | Where a path may continue after the current relationship resolves |
+| Ownership State | Which Actor owns execution or continuation |
+| Boundary State | Which request/response or declared outcome relationship remains unresolved |
+| Result State | Which work result remains available and what its declared disposition is |
+| Join State | Which inputs belong to one convergence, which are satisfied, and whether its continuation has fired |
+| Wait State | Which continuation is waiting and which outcomes may resolve it |
+| Round State | Which Loop, review, or Retry round is being discussed |
+| Deadline State | Which temporal boundary may produce a Timeout outcome |
+
+Boundary State, Wait State, and Join State describe unfinished collaboration relationships. They may have several possible outcomes, but conflicting outcomes must not advance the same logical continuation twice. Join State may refer to Result States needed downstream, but it does not merge or consume their business content. L1 supplies the concrete correlation and commit mechanism.
+
+L0 defines which facts must remain distinguishable and which later transition may consume them. It does not choose whether they live in a call stack, memory, a database, a filesystem, or a message system.
+
+## 5. Quick Reference by Structural Effect
+
+The following table summarizes each element by its effect on paths, boundaries, ownership, or state:
 
 | Shape | Gate | Effect |
 | --- | --- | --- |
 | `1 → 1` | Sequence | Continue one path |
-| `1 → 1 of N` | Branch | Select a successor path |
-| `1 work → 1 actor` | Route | Select a continuation Actor |
+| `1 → selected set` | Branch | Select candidate continuations |
+| `1 work → actor candidate` | Route | Select an Actor without changing ownership |
 | `1 → N` | Fan-out | Expand multiple branches |
-| `N → 1` | Fan-in | Converge branch state |
-| `N → first 1` | Race | Continue from the first acceptable result |
+| `N signals → 1` | Fan-in | Observe convergence readiness and enable one continuation |
+| `N alternatives → 1` | Simple Merge | Share a successor without waiting |
+| `N → first 1` | Race | Continue from the first qualifying signal |
 | `N → threshold → 1` | Quorum | Continue after reaching a threshold |
 | `A → B → A` | Call / Return | Cross an Actor boundary and return |
 | `A → B` | Delegate | Change execution ownership |
 | `A → B → ...` | Transfer | Change the continuation owner |
-| `1 → suspended → 1` | Wait / Resume | Suspend and restore a path |
+| `1 → waiting → 1` | Wait / Resume | Wait and restore a path |
 | `1 ↺` | Retry / Loop | Repeat a path |
+| `source → target request` | Cancel | Request another scope to terminate |
 | `1 → 0` | Stop | Produce a terminal state |
 
 This table describes logical shape, not implementation topology. The same gate may cross processes, machines, or organizations, or remain entirely inside one process.
 
 ---
 
-## 5. The Most Important Boundaries Between Gates
+## 6. The Most Important Boundaries Between Gates
 
-### Fan-out is not Broadcast
-
-Fan-out creates work branches. Broadcast expands the visibility of the same information.
-
-Every receiver seeing a message does not mean that every receiver owns a piece of work. Conversely, one job may be divided into several branches without broadcasting the full input to every Actor.
-
-### Fan-in is not Reduce
-
-Fan-in decides when branches converge. Reduce decides how several results are computed into one.
-
-A system may Fan-in after all branches complete and then choose one result. It may also Reduce incrementally as branches arrive. The two should not be coupled.
-
-### Route is not Transfer
-
-Route selects a target Actor. Transfer changes continuation ownership.
-
-A system may Route information to a Specialist while the original Actor still controls the subsequent process. The continuation owner changes only when Transfer occurs.
-
-### Call is not Delegate
-
-Call creates an execution boundary expected to return. Delegate creates a work commitment advanced by another Actor.
-
-An Actor may call another Actor for information without delegating any work. It may also delegate a long-running task and continue processing something else.
-
-### Wait is not Stop
-
-Wait preserves a future continuation condition. Stop creates a terminal state.
-
-Treating Wait as Stop loses unfinished work. Treating Stop as Wait produces suspended work that can never be reclaimed.
+| Do not conflate | Distinction |
+| --- | --- |
+| Branch / Fan-out | Branch selects candidate continuations; Fan-out creates independently advancing branches. |
+| Fan-out / Broadcast | Fan-out creates work paths; Broadcast changes information visibility. |
+| Fan-out / Fan-in | Fan-out creates branches; Fan-in observes convergence. Neither requires the other. |
+| Fan-in / Reduce | Fan-in controls when to continue; Reduce processes work-result content. |
+| Simple Merge / Fan-in | Simple Merge shares a successor without waiting; Fan-in waits for a convergence condition. |
+| Flow / Result Flow | Flow identifies enabled paths; Result Flow identifies the fate of work results. |
+| Branch / Route | Branch selects continuations; Route selects an Actor. |
+| Route / Transfer | Route selects a candidate; Transfer changes continuation ownership. |
+| Call / Delegate | Call creates a request/response boundary; Delegate assigns execution ownership of an explicit work scope. They may be composed. |
+| Delegate / Transfer | Delegate changes the executor of a scope; Transfer changes the continuation owner of a path. |
+| Wait / Stop | Wait preserves a continuation; Stop creates a terminal outcome. |
+| Cancel / Stop | Cancel requests termination; Stop is committed termination of the declared scope. |
+| Race / Voting | Race selects the first qualifying input; Voting is a result-processing mechanism. |
 
 ---
 
-## 6. What L0 Does Not Define
+## 7. What L0 Does Not Define
 
-Logic gates define how collaboration state changes. They do not define how those transitions happen reliably in a real system.
+Logic gates define how collaboration state changes, including the structural fate of work results. They do not define the business schema of those results or how transitions happen reliably in a real system.
 
-For example, `Transfer(A, B)` says only that continuation moves from A to B. It does not answer:
+For example, `Transfer(A, B)` says that continuation ownership has committed from A to B. It does not answer:
 
 - how A and B are uniquely identified;
 - which message expresses Transfer;
 - what happens when B is offline;
-- whether B must acknowledge acceptance;
+- which acceptance rule, if any, authorizes the commit;
 - how context and artifacts travel with Transfer;
 - how state is persisted and recovered;
 - whether duplicate delivery causes duplicate execution.
 
-These concerns belong to L1: the Multi-Actor communication protocol.
+These concerns belong to L1: the structured Actor Circuit Protocol.
 
 Likewise, gates do not prescribe which gates should be composed. Orchestrator–Worker, Group Chat, Debate, Evaluator–Optimizer, and other complete execution structures belong to Multi-Agent systems built above gates and communication protocols.
 
 This produces a clear layering:
 
 ```text
-L0  Collaboration Logic Gates
-    Define how collaboration state changes
+L0  Collaboration Logic Circuit
+    Define Flow, Result Flow, Responsibility, and Lifecycle changes
 
-L1  Multi-Actor Communication Protocol
-    Express, transport, acknowledge, and recover transitions across Actors
+L1  Actor Circuit Protocol
+    Represent Gate instances, process edges, state retention, communication timing,
+    acknowledgement, and correlation as structured data
 
 L2  Multi-Agent Systems
     Compose gates into complete collaboration systems
@@ -486,7 +569,7 @@ This article stops at L0.
 It does not attempt to decide which Multi-Agent system is best or force all collaboration into one workflow. It establishes a more basic vocabulary so that later we can say precisely:
 
 - this is Fan-out, not merely “starting several Agents”;
-- this requires Fan-in, not merely “summarize at the end”;
+- these completion signals synchronize through Fan-in, while the successor consumes the retained work results;
 - this is Call, not Transfer;
 - this is still Wait, not Stop;
 - execution ownership changed, but continuation ownership did not.

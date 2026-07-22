@@ -1,6 +1,6 @@
 ---
 name: actor-circuit
-description: Actor-centered vocabulary for understanding, explaining, designing, or reviewing collaboration among humans, AI agents, services, scripts, teams, and workflow instances through the L0/L1/L2 Multi-Actor model. Use for Multi-Agent architecture, orchestration, delegation, handoffs, routing, fan-out/fan-in, waits, retries, termination, responsibility flow, or when distinguishing a primitive gate, a composed circuit, and a complete system.
+description: Actor-centered vocabulary for understanding, explaining, designing, or reviewing collaboration among humans, AI agents, services, scripts, teams, and workflow instances through the L0/L1/L2 Multi-Actor model. Use for Multi-Agent architecture, orchestration, delegation, handoffs, routing, fan-out/fan-in, result flow, waits, retries, termination, responsibility flow, or when distinguishing a primitive gate, a composed circuit, and a complete system.
 ---
 
 # Actor Circuit
@@ -13,15 +13,32 @@ Read [references/actor.md](references/actor.md) whenever the task depends on dec
 
 Read [references/l0.md](references/l0.md) whenever the task involves collaboration-state transitions, gates, state elements, circuits, path shape, responsibility flow, waiting, convergence, repetition, or termination.
 
-Treat L0 as the current defined scope. Treat L1 and L2 as previews: identify dependencies on them, but do not invent a finished protocol or system taxonomy on behalf of this project.
+Read [references/l1.md](references/l1.md) whenever the task needs a structured Actor-circuit definition or involves identity, process edges, state retention, communication timing, delivery, acknowledgement, correlation, asynchronous handoff, offline work, resumption, duplication, late results, or product integration.
 
-Keep these distinctions explicit:
+Treat the Actor foundation and L0 as the defined conceptual core. Treat L1 as an experimental `v0alpha1` interchange model and L2 as a preview. Do not present either as an established industry standard.
 
-- The Actor model is an unnumbered foundation, not part of L0.
-- A state element records a collaboration fact that later transitions need to observe. In the circuit analogy, it plays a role similar to a register or latch.
-- A gate changes collaboration state. A circuit connects gates, state elements, and possible continuations.
-- A topology is not complete until its continuation, ownership, waiting, convergence, and termination semantics are clear.
-- A circuit or named orchestration structure is not automatically a collaboration design pattern.
-- The underlying gates predate this project. The contribution here is their Actor-centered abstraction, organization, and layering.
+Treat L0 as the semantic source of truth. If an experimental L1 YAML artifact collapses several L0 committed transitions into one hidden protocol or otherwise conflicts with L0, report the mismatch instead of redefining L0 from the YAML.
 
-Do not force a fixed output format. Produce prose, a table, a diagram, a review, or a structured artifact according to the user's purpose.
+When creating or analyzing a Multi-Actor system, make the consequential relationships visible: Actor boundaries, Gates, State Elements, Flow, Result Flow, execution ownership, continuation ownership, unresolved outcomes, convergence, repetition, and termination scope. An L0 Circuit may be a partial conceptual fragment; do not invent executable entry points, identifiers, storage, or protocol details merely to make it look complete.
+
+When translating one L0 Gate into structured data, use its readable `kind: gate` YAML under `assets/l1/gates/`. Keep configured policies and circuit forms distinct under `assets/l1/configured/`.
+
+When representing a complete process, start from the `kind: circuit` YAML under `assets/l1/circuits/`. Describe Actors, memory, steps, Gate names, continuations, and communication choices with the smallest readable vocabulary. Map the Circuit to a concrete product with a separate `kind: product-binding` file based on `assets/l1/bindings/product-binding-template.yaml`.
+
+When designing L1, put stable, comparable choices in typed `parameters`; put task-dependent judgement in `prompt_slots`; put runtime facts in `state`; and put auditable run facts in `evidence`. In a Circuit, select Gate parameters under `with` and supply prompt text or references under `prompts` and `prompt`. Freeze resolved parameters and prompts before an evaluation run. Do not invent a closed enum for a fuzzy judgement merely to make it easier to validate.
+
+Keep these guardrails explicit:
+
+- The Actor foundation defines participants; L0 defines collaboration semantics; L1 represents concrete interaction; L2 composes complete systems.
+- One Gate occurrence is one committed transition. Do not hide delivery, acceptance, waiting, and commitment inside it.
+- Distinguish an event or signal, a Gate outcome, a completion signal, and a work result.
+- Branch selects continuations; Fan-out creates independently advancing branches.
+- Fan-in updates Join State from satisfaction signals and may enable one continuation once. It does not process work-result content.
+- Boundary State, Wait State, and Join State may have several outcomes, but conflicting outcomes must not advance the same continuation twice.
+- Route selects an Actor; Delegate changes bounded execution ownership; Transfer changes continuation ownership.
+- Cancel requests termination; Stop is committed termination of a declared scope.
+- A Circuit or named orchestration structure is not automatically a collaboration design pattern.
+
+A ProductBinding may map or compensate for Circuit semantics, but must not silently equate delivery, acceptance, and commitment.
+
+Do not force YAML when prose, a table, a diagram, or a review better serves the user's purpose. Use YAML when the artifact must be reused, compared, validated, or anchored to a product.
