@@ -1,8 +1,10 @@
 # Actor Circuit
 
-> When Actors become circuits.
+> When Actors become circuits — the semantics beneath agent graphs.
 
-One Agent can plan, write code, search, or operate tools. Putting several Agents together, however, does not automatically create a system.
+One Agent can plan, write code, search, or operate tools. Putting several Agents together, however, does not automatically create a system — so today's agent frameworks converge on the same picture: nodes that do work, edges that route between them, and state flowing along the edges.
+
+The picture shows how to draw a system. It does not say what an edge means. Is a message delivered, accepted, or committed to? Does a fan-in merge work results, or only observe completion signals? Is a paused branch alive, or stalled forever? Actor Circuit exists to make those meanings precise.
 
 Imagine a small product-brainstorming team:
 
