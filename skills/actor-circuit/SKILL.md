@@ -44,6 +44,7 @@ Keep these guardrails explicit:
 - A reply stays within the audience of the message that prompted it; naming an Actor as subject does not add it to the audience.
 - Cancel requests termination; Stop is committed termination of a declared scope.
 - A Circuit or named orchestration structure is not automatically a collaboration design pattern.
+- Aggregate metrics summarize a run; they do not substitute for trace evidence, especially where the interaction history contains feedback cycles — review loops, repeated pairwise exchanges, group discussion, shared boards.
 
 A ProductBinding may map or compensate for Circuit semantics, but must not silently equate delivery, acceptance, and commitment.
 

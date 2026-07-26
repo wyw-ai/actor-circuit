@@ -78,6 +78,10 @@ Names such as Orchestrator–Worker, Group Chat, recursive delegation, and Evalu
 
 The current release provides [l2.md](l2.md): a working-draft taxonomy built on two axes — continuation topology and decision locus — with full entries for a few observed structures and a candidate list for the rest. Design guidance beyond those entries remains future work.
 
+## Scope boundary: one circuit, not a population
+
+The model describes single collaboration structures — one circuit, one L2 composition — transition by transition. It does not describe the aggregate behavior of many concurrent circuits: throughput distributions, retry storms, load propagation, or other population-level questions are a separate, currently open problem. Do not stretch an L2 entry into a claim about system-level dynamics.
+
 ## Durable Execution Plane
 
 Durable execution answers **which collaboration facts survive time and failure, and how unfinished execution continues**.
