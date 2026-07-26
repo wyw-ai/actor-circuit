@@ -15,7 +15,7 @@ Read [references/l0.md](references/l0.md) whenever the task involves collaborati
 
 Read [references/l1.md](references/l1.md) whenever the task needs a structured Actor-circuit definition or involves identity, process edges, state retention, communication timing, delivery, acknowledgement, correlation, asynchronous handoff, offline work, resumption, duplication, late results, or product integration.
 
-Read [references/l2.md](references/l2.md) whenever the task involves a complete Multi-Agent system — composing Actors, circuits, and communication into something that must converge, survive failures, and terminate.
+Read [references/l2.md](references/l2.md) whenever the task involves a complete Multi-Actor system — composing Actors, circuits, and communication into something that must converge, survive failures, and terminate.
 
 Treat the Actor foundation and L0 as the defined conceptual core. Treat L1 as an experimental `v0alpha1` interchange model and L2 as a preview. Do not present either as an established industry standard.
 

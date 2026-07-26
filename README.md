@@ -46,7 +46,7 @@ L0 — Collaboration Logic Circuit
 L1 — Actor Circuit Protocol
   How L0 circuits become structured, state-aware, time-aware data
 
-L2 — Multi-Agent Systems
+L2 — Multi-Actor Systems
   How Actors, circuits, and protocol form complete systems
 ```
 
@@ -70,7 +70,7 @@ Its references contain:
 - the [Actor foundation](skills/actor-circuit/references/actor.md);
 - the [L0 professional specification](skills/actor-circuit/references/l0.md);
 - the [experimental L1 model](skills/actor-circuit/references/l1.md), including one YAML definition per L0 Gate, Circuit YAML for recording and comparing complete processes, and channel guidance for concrete communication media;
-- the [L2 preview](skills/actor-circuit/references/l2.md), a two-axis taxonomy of Multi-Agent system structures with full entries for a few of them;
+- the [L2 preview](skills/actor-circuit/references/l2.md), a two-axis taxonomy of Multi-Actor system structures with full entries for a few of them;
 - the [L0/L1/L2 boundaries](skills/actor-circuit/references/layers.md).
 
 There is no CLI or frozen validation schema in this release. The L1 YAML files are intended to become future CLI input and product-integration anchors after they have been exercised against real systems.

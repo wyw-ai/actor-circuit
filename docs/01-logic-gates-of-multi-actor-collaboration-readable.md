@@ -1,6 +1,6 @@
 # When Agents Become Circuits
 
-> From collaboration logic gates to stable Multi-Agent systems
+> From collaboration logic gates to stable Multi-Actor systems
 
 Suppose you want several AI Agents to brainstorm a new product feature together.
 
@@ -52,7 +52,7 @@ An Agent completing a task demonstrates the capability of a model and its tools.
 
 Stability does not imply simplicity. Engineering means that even when complexity is real, work can still be split, run independently, wait, transfer, recover, converge, and terminate. Even if every Agent is individually capable, a system without a defined Fan-in, responsibility transfer, or terminal state can still repeat work, wait forever, or silently stop when nobody owns continuation.
 
-The Actor circuit connects these levels. Downward, it connects individual Actor capabilities. Upward, it gives communication protocols and Multi-Agent systems a collaboration structure that can be described and reviewed. Whether that circuit can survive process exits, network failures, and machine outages depends on reliable state carriage and recovery mechanisms.
+The Actor circuit connects these levels. Downward, it connects individual Actor capabilities. Upward, it gives communication protocols and Multi-Actor systems a collaboration structure that can be described and reviewed. Whether that circuit can survive process exits, network failures, and machine outages depends on reliable state carriage and recovery mechanisms.
 
 We therefore need to study more than prompts, model choice, and role design. We also need to study the stable structures from which collaboration itself is built.
 
@@ -60,7 +60,7 @@ We therefore need to study more than prompts, model choice, and role design. We 
 
 ## The Collaborating Subject: Actor
 
-Although the industry usually calls these systems Multi-Agent Systems, real collaboration involves more than AI Agents.
+Although the industry usually calls these systems Multi-Agent Systems, this project calls them **Multi-Actor Systems** because real collaboration involves more than AI Agents.
 
 A task may proceed like this:
 
@@ -604,7 +604,7 @@ Execution Plane
 
 This article stops at L0. A short-lived circuit may keep its state in memory; a system promising to continue across time or failure needs stronger execution guarantees. In either case, L0 says what must remain distinguishable, not which storage technology implements it.
 
-Only after establishing a stable foundational vocabulary can we discuss a Multi-Agent system precisely: where it fans out, whether and how results later converge, who is merely called and who truly takes over, whether the system is waiting or already terminated, and whether a supposed new pattern introduces a new collaboration mechanism or merely reconnects familiar circuit elements.
+Only after establishing a stable foundational vocabulary can we discuss a Multi-Actor system precisely: where it fans out, whether and how results later converge, who is merely called and who truly takes over, whether the system is waiting or already terminated, and whether a supposed new pattern introduces a new collaboration mechanism or merely reconnects familiar circuit elements.
 
 Many structures called Multi-Agent Patterns today are Actor circuits composed from state transitions, state memory, and feedback connections.
 

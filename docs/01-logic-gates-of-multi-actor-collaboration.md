@@ -12,14 +12,14 @@ Sequential and Fan-out/Fan-in resemble `;`, `fork`, and `join` in programming la
 
 This article calls those operations **logic gates of Multi-Actor collaboration**.
 
-“Logic gate” is an engineering analogy rather than a strict mathematical mapping to digital circuits. Each gate has stable, business-independent input/output semantics, and gates can be composed into more complex Multi-Agent systems.
+“Logic gate” is an engineering analogy rather than a strict mathematical mapping to digital circuits. Each gate has stable, business-independent input/output semantics, and gates can be composed into more complex Multi-Actor systems.
 
 This article discusses only two subjects:
 
 1. what an Actor is;
 2. how L0 describes a collaboration circuit through Gates, Result Flow, State Elements, and continuations.
 
-Communication protocols, framework implementations, concrete Multi-Agent systems, and design patterns above the gate level are outside its scope.
+Communication protocols, framework implementations, concrete Multi-Actor systems, and design patterns above the gate level are outside its scope.
 
 An L0 circuit may describe a complete collaboration or only the fragment needed to explain one design question. It does not require an executable start node or a globally closed workflow.
 
@@ -548,7 +548,7 @@ For example, `Transfer(A, B)` says that continuation ownership has committed fro
 
 These concerns belong to L1: the structured Actor Circuit Protocol.
 
-Likewise, gates do not prescribe which gates should be composed. Orchestrator–Worker, Group Chat, Debate, Evaluator–Optimizer, and other complete execution structures belong to Multi-Agent systems built above gates and communication protocols.
+Likewise, gates do not prescribe which gates should be composed. Orchestrator–Worker, Group Chat, Debate, Evaluator–Optimizer, and other complete execution structures belong to Multi-Actor systems built above gates and communication protocols.
 
 This produces a clear layering:
 
@@ -560,13 +560,13 @@ L1  Actor Circuit Protocol
     Represent Gate instances, process edges, state retention, communication timing,
     acknowledgement, and correlation as structured data
 
-L2  Multi-Agent Systems
+L2  Multi-Actor Systems
     Compose gates into complete collaboration systems
 ```
 
 This article stops at L0.
 
-It does not attempt to decide which Multi-Agent system is best or force all collaboration into one workflow. It establishes a more basic vocabulary so that later we can say precisely:
+It does not attempt to decide which Multi-Actor system is best or force all collaboration into one workflow. It establishes a more basic vocabulary so that later we can say precisely:
 
 - this is Fan-out, not merely “starting several Agents”;
 - these completion signals synchronize through Fan-in, while the successor consumes the retained work results;
@@ -574,4 +574,4 @@ It does not attempt to decide which Multi-Agent system is best or force all coll
 - this is still Wait, not Stop;
 - execution ownership changed, but continuation ownership did not.
 
-Only after these gates are clear can we discuss communication protocols, Multi-Agent systems, and collaboration design patterns above the gate level.
+Only after these gates are clear can we discuss communication protocols, Multi-Actor systems, and collaboration design patterns above the gate level.

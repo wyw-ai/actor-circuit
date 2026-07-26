@@ -70,9 +70,9 @@ L1 separates four concerns that should not be collapsed: stable and comparable c
 
 The current release provides one readable `kind: gate` YAML per L0 base Gate, separate YAML for selected configured forms, product-independent `kind: circuit` YAML, `kind: channel` guidance for concrete communication media, and product-binding YAML. These artifacts are an evolving interchange model for Humans, Agents, and future CLI tooling, not a finished universal execution or wire protocol. Use [l1.md](l1.md) for the model and its bundled examples.
 
-## L2: Multi-Agent Systems
+## L2: Multi-Actor Systems
 
-L2 answers **how Actors, L0 circuits, and L1 communication form a complete Multi-Agent system**.
+L2 answers **how Actors, L0 circuits, and L1 communication form a complete Multi-Actor system**.
 
 Names such as Orchestrator–Worker, Group Chat, recursive delegation, and Evaluator–Optimizer belong here. A name alone is not a complete description: an L2 system also needs Actor boundaries, state ownership, circuits, protocol assumptions, convergence rules, failure behavior, and termination conditions.
 
