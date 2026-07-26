@@ -31,6 +31,7 @@ steps:
     with:
       mode: synchronous
       delivery: immediate
+      activation: wakes
       match_by: [work_id, call_id]
     save:
       boundary_as: pending_call_boundary
@@ -46,6 +47,7 @@ steps:
     outcome: completion_signal.outcome
     with:
       delivery: immediate
+      activation: wakes
       match_by: [work_id, call_id]
     save:
       completion_outcome_as: completion_outcome

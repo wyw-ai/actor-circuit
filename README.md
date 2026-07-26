@@ -52,7 +52,7 @@ Durable execution runs across these layers. L0 identifies what a circuit must re
 
 An L0 Circuit may be a complete collaboration or a partial fragment used to explain one design question. L0 makes collaboration meaning visible; it does not require executable entry points, identifiers, or storage choices.
 
-The Actor foundation and L0 form the defined conceptual core. L1 now has an experimental `v0alpha1` YAML representation for complete Actor circuits. Its design rule is simple: stable choices become parameters, task-dependent judgement stays in prompts, runtime facts become state, and evaluation claims require evidence. L2 remains a preview for future work.
+The Actor foundation and L0 form the defined conceptual core. L1 now has an experimental `v0alpha1` YAML representation for complete Actor circuits. Its design rule is simple: stable choices become parameters, task-dependent judgement stays in prompts, runtime facts become state, and evaluation claims require evidence. L2 is a preview: the skill's references include a two-axis taxonomy and initial pattern entries.
 
 ## Articles
 
@@ -67,7 +67,8 @@ Its references contain:
 
 - the [Actor foundation](skills/actor-circuit/references/actor.md);
 - the [L0 professional specification](skills/actor-circuit/references/l0.md);
-- the [experimental L1 model](skills/actor-circuit/references/l1.md), including one YAML definition per L0 Gate and reusable Circuit YAML;
+- the [experimental L1 model](skills/actor-circuit/references/l1.md), including one YAML definition per L0 Gate, Circuit YAML for recording and comparing complete processes, and channel guidance for concrete communication media;
+- the [L2 preview](skills/actor-circuit/references/l2.md), a two-axis taxonomy of Multi-Agent system structures with full entries for a few of them;
 - the [L0/L1/L2 boundaries](skills/actor-circuit/references/layers.md).
 
 There is no CLI or frozen validation schema in this release. The L1 YAML files are intended to become future CLI input and product-integration anchors after they have been exercised against real systems.

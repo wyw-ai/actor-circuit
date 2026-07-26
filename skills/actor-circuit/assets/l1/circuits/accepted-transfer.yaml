@@ -33,6 +33,7 @@ steps:
     with:
       mode: asynchronous
       delivery: store_and_forward
+      activation: wakes
       match_by: [work_id, transfer_id]
     save:
       boundary_as: pending_acceptance_boundary
@@ -48,6 +49,7 @@ steps:
     outcome: acceptance_completion_signal.outcome
     with:
       delivery: store_and_forward
+      activation: wakes
       match_by: [work_id, transfer_id]
     save:
       work_result_as: acceptance_decision

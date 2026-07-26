@@ -6,7 +6,7 @@ This is a working model for organizing Multi-Actor engineering questions, not an
 
 - The **Actor foundation** and **L0** form the defined conceptual core.
 - **L1** has an experimental `v0alpha1` YAML representation for Actor circuits.
-- **L2** currently defines scope only. Its detailed taxonomy remains future work.
+- **L2** has a preview taxonomy and initial entries in [l2.md](l2.md); most of its taxonomy and design guidance remains future work.
 
 ## Foundation: Actor
 
@@ -54,6 +54,7 @@ Its responsibilities include:
 - synchronous and asynchronous continuation behavior;
 - immediate and store-and-forward delivery;
 - delivery and acknowledgement;
+- wake activation and audience visibility for cross-Actor messages;
 - task, branch, round, correlation, and causation identity;
 - context and result carriage;
 - responsibility-transfer acceptance;
@@ -67,7 +68,7 @@ L1 makes both the collaboration process and its cross-Actor interactions observa
 
 L1 separates four concerns that should not be collapsed: stable and comparable choices are typed parameters; task-dependent judgement remains in prompts; changing collaboration facts live in state; and evaluation-relevant traces are recorded as evidence. A concrete Circuit resolves parameters and prompts before an evaluation run without pretending that prompt semantics form a universal enum.
 
-The current release provides one readable `kind: gate` YAML per L0 base Gate, separate YAML for selected configured forms, product-independent `kind: circuit` YAML, and product-binding YAML. These artifacts are an evolving interchange model for Humans, Agents, and future CLI tooling, not a finished universal execution or wire protocol. Use [l1.md](l1.md) for the model and its bundled examples.
+The current release provides one readable `kind: gate` YAML per L0 base Gate, separate YAML for selected configured forms, product-independent `kind: circuit` YAML, `kind: channel` guidance for concrete communication media, and product-binding YAML. These artifacts are an evolving interchange model for Humans, Agents, and future CLI tooling, not a finished universal execution or wire protocol. Use [l1.md](l1.md) for the model and its bundled examples.
 
 ## L2: Multi-Agent Systems
 
@@ -75,7 +76,7 @@ L2 answers **how Actors, L0 circuits, and L1 communication form a complete Multi
 
 Names such as Orchestrator–Worker, Group Chat, recursive delegation, and Evaluator–Optimizer belong here. A name alone is not a complete description: an L2 system also needs Actor boundaries, state ownership, circuits, protocol assumptions, convergence rules, failure behavior, and termination conditions.
 
-The current release may recognize candidate L2 structures, but their taxonomy and design guidance remain future work.
+The current release provides [l2.md](l2.md): a working-draft taxonomy built on two axes — continuation topology and decision locus — with full entries for a few observed structures and a candidate list for the rest. Design guidance beyond those entries remains future work.
 
 ## Durable Execution Plane
 

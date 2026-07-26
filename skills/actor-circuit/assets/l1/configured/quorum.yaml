@@ -41,6 +41,12 @@ parameters:
     required_when:
       remaining_inputs: request_cancel
 
+  corrections:
+    type: enum
+    values: [first_counts, latest_supersedes]
+    required_when:
+      qualification_method: [prompt, human]
+
 prompt_slots:
   qualifying_signal:
     required_when:
@@ -72,3 +78,4 @@ rules:
   - Request_cancel sends a Cancel request and does not itself prove termination.
   - With wait_for_stop, the continuation fires only after the declared remaining input scopes produce observed Stop outcomes.
   - With continue_without_waiting, requested cancellation does not delay the continuation.
+  - With latest_supersedes, a correction replaces the input's earlier qualifying signal; the superseded signal never counts toward the quorum.

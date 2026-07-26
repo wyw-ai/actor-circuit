@@ -4,6 +4,8 @@ name: all-branches-fan-out-fan-in
 
 description: Create known branches, assign each bounded scope, collect each Return, converge only on completion signals, and retain work results separately.
 
+instance_of: [orchestrator-worker]
+
 uses: [fan-out, delegate, call, return, fan-in, branch, stop]
 
 actors:
@@ -52,6 +54,7 @@ steps:
       work_scope: branch_work_scope[branch_id]
     with:
       delivery: store_and_forward
+      activation: wakes
       acceptance: required_before_commit
       match_by: [work_id, fanout_id, branch_id]
     save:
@@ -69,6 +72,7 @@ steps:
     with:
       mode: asynchronous
       delivery: store_and_forward
+      activation: wakes
       match_by: [work_id, fanout_id, branch_id]
     save:
       boundary_as: pending_branch_boundaries[branch_id]
@@ -85,6 +89,7 @@ steps:
     outcome: branch_completion_signal[branch_id].outcome
     with:
       delivery: store_and_forward
+      activation: wakes
       match_by: [work_id, fanout_id, branch_id]
     save:
       completion_signal_as: branch_completion_signals[branch_id]
@@ -109,6 +114,7 @@ steps:
       late_signals: record_without_reopening
       mode: asynchronous
       delivery: store_and_forward
+      activation: wakes
       match_by: [work_id, fanout_id, join_id, branch_id]
     save:
       join_state_as: join_state

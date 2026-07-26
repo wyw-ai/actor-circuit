@@ -15,6 +15,8 @@ Read [references/l0.md](references/l0.md) whenever the task involves collaborati
 
 Read [references/l1.md](references/l1.md) whenever the task needs a structured Actor-circuit definition or involves identity, process edges, state retention, communication timing, delivery, acknowledgement, correlation, asynchronous handoff, offline work, resumption, duplication, late results, or product integration.
 
+Read [references/l2.md](references/l2.md) whenever the task involves a complete Multi-Agent system — composing Actors, circuits, and communication into something that must converge, survive failures, and terminate.
+
 Treat the Actor foundation and L0 as the defined conceptual core. Treat L1 as an experimental `v0alpha1` interchange model and L2 as a preview. Do not present either as an established industry standard.
 
 Treat L0 as the semantic source of truth. If an experimental L1 YAML artifact collapses several L0 committed transitions into one hidden protocol or otherwise conflicts with L0, report the mismatch instead of redefining L0 from the YAML.
@@ -23,7 +25,9 @@ When creating or analyzing a Multi-Actor system, make the consequential relation
 
 When translating one L0 Gate into structured data, use its readable `kind: gate` YAML under `assets/l1/gates/`. Keep configured policies and circuit forms distinct under `assets/l1/configured/`.
 
-When representing a complete process, start from the `kind: circuit` YAML under `assets/l1/circuits/`. Describe Actors, memory, steps, Gate names, continuations, and communication choices with the smallest readable vocabulary. Map the Circuit to a concrete product with a separate `kind: product-binding` file based on `assets/l1/bindings/product-binding-template.yaml`.
+When the collaboration runs over a concrete communication medium, consult the matching `kind: channel` YAML under `assets/l1/channels/` before fixing communication choices; it names the pitfalls the medium forces and the questions a product must answer.
+
+When a complete process must be recorded, frozen for evaluation, compared, or bound to a product, express it as a `kind: circuit` YAML under `assets/l1/circuits/`. Describe Actors, memory, steps, Gate names, continuations, and communication choices with the smallest readable vocabulary. The bundled Circuits are instances to reference, not starting points for design: Gates and channel assets constrain the design, while the agent remains responsible for the concrete interaction. Map the Circuit to a concrete product with a separate `kind: product-binding` file based on `assets/l1/bindings/product-binding-template.yaml`.
 
 When designing L1, put stable, comparable choices in typed `parameters`; put task-dependent judgement in `prompt_slots`; put runtime facts in `state`; and put auditable run facts in `evidence`. In a Circuit, select Gate parameters under `with` and supply prompt text or references under `prompts` and `prompt`. Freeze resolved parameters and prompts before an evaluation run. Do not invent a closed enum for a fuzzy judgement merely to make it easier to validate.
 
@@ -36,6 +40,8 @@ Keep these guardrails explicit:
 - Fan-in updates Join State from satisfaction signals and may enable one continuation once. It does not process work-result content.
 - Boundary State, Wait State, and Join State may have several outcomes, but conflicting outcomes must not advance the same continuation twice.
 - Route selects an Actor; Delegate changes bounded execution ownership; Transfer changes continuation ownership.
+- A message that requests action must wake its recipient; natural-language urgency does not advance a continuation.
+- A reply stays within the audience of the message that prompted it; naming an Actor as subject does not add it to the audience.
 - Cancel requests termination; Stop is committed termination of a declared scope.
 - A Circuit or named orchestration structure is not automatically a collaboration design pattern.
 

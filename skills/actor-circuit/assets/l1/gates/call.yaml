@@ -28,6 +28,11 @@ parameters:
     values: [immediate, store_and_forward]
     required: true
 
+  activation:
+    type: enum
+    values: [wakes, notify_only]
+    required: true
+
   match_by:
     type: identity_list
     required: true

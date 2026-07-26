@@ -4,6 +4,8 @@ name: test-and-release
 
 description: Open explicit Call boundaries for testing and release, resolve each through Return, and branch on the retained test result.
 
+instance_of: [pipeline]
+
 uses: [call, return, branch, stop]
 
 actors:
@@ -36,6 +38,7 @@ steps:
     with:
       mode: synchronous
       delivery: immediate
+      activation: wakes
       match_by: [work_id]
     save:
       boundary_as: pending_test_boundary
@@ -51,6 +54,7 @@ steps:
     outcome: test_completion_signal.outcome
     with:
       delivery: immediate
+      activation: wakes
       match_by: [work_id]
     save:
       completion_signal_as: test_completion_signal
@@ -84,6 +88,7 @@ steps:
     with:
       mode: synchronous
       delivery: immediate
+      activation: wakes
       match_by: [work_id]
     save:
       boundary_as: pending_release_boundary
@@ -99,6 +104,7 @@ steps:
     outcome: release_completion_signal.outcome
     with:
       delivery: immediate
+      activation: wakes
       match_by: [work_id]
     save:
       completion_signal_as: release_completion_signal

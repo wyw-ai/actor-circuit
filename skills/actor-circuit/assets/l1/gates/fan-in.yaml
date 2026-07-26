@@ -46,6 +46,12 @@ parameters:
     values: [ignore, record_without_reopening]
     required: true
 
+  corrections:
+    type: enum
+    values: [first_counts, latest_supersedes]
+    required_when:
+      qualification_method: [prompt, human]
+
   timeout:
     type: duration
     required: false
@@ -58,6 +64,11 @@ parameters:
   delivery:
     type: enum
     values: [immediate, store_and_forward]
+    required_when: signals_cross_actor_boundaries
+
+  activation:
+    type: enum
+    values: [wakes, notify_only]
     required_when: signals_cross_actor_boundaries
 
   match_by:
@@ -102,3 +113,5 @@ rules:
   - With wait_for_stop, the continuation fires only after the declared remaining input scopes produce observed Stop outcomes.
   - With continue_without_waiting, requested cancellation does not delay the continuation.
   - Late signals follow late_signals and never reopen a fired continuation implicitly.
+  - Before declaring an input missing, rebuild the participation ledger from current state; a stale read is not proof of absence.
+  - With latest_supersedes, a correction replaces the input's earlier satisfied signal; the superseded signal never counts toward convergence.

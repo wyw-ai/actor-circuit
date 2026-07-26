@@ -4,6 +4,8 @@ name: bounded-review-loop
 
 description: Generate, review, and revise a candidate for at most three rounds, ending as not_satisfied when the bound is reached.
 
+instance_of: [evaluator-optimizer]
+
 uses: [call, return, branch, sequence, stop]
 
 actors:
@@ -47,6 +49,7 @@ steps:
     with:
       mode: synchronous
       delivery: immediate
+      activation: wakes
       match_by: [work_id, round_id]
     save:
       boundary_as: pending_generation_boundary
@@ -62,6 +65,7 @@ steps:
     outcome: generation_completion_signal.outcome
     with:
       delivery: immediate
+      activation: wakes
       match_by: [work_id, round_id]
     save:
       completion_signal_as: generation_completion_signal
@@ -84,6 +88,7 @@ steps:
     with:
       mode: asynchronous
       delivery: store_and_forward
+      activation: wakes
       match_by: [work_id, round_id]
     save:
       boundary_as: pending_review_boundary
@@ -99,6 +104,7 @@ steps:
     outcome: review_completion_signal.outcome
     with:
       delivery: store_and_forward
+      activation: wakes
       match_by: [work_id, round_id]
     save:
       completion_signal_as: review_completion_signal

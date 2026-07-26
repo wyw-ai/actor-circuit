@@ -62,6 +62,7 @@ steps:
     with:
       match_method: rule
       delivery: store_and_forward
+      activation: wakes
       match_by: [work_id, wait_id]
     save:
       wait_state_as: resolved_wait
