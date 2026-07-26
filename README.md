@@ -75,6 +75,14 @@ Its references contain:
 
 There is no CLI or frozen validation schema in this release. The L1 YAML files are intended to become future CLI input and product-integration anchors after they have been exercised against real systems.
 
+## Install
+
+```text
+npx skills add wyw-ai/actor-circuit
+```
+
+This installs the [Actor Circuit skill](skills/actor-circuit/SKILL.md) into your coding agent — Claude Code, Codex, Cursor, Kimi Code CLI, and 70 more agents are supported through the [skills CLI](https://github.com/vercel-labs/skills).
+
 ## Provenance
 
 The underlying workflow and interaction structures are not claimed as original inventions. This project reorganizes established research, existing framework designs, and Multi-Actor engineering experience around a common Actor foundation and a clear layer boundary.
