@@ -2,9 +2,15 @@
 
 > When Actors become circuits — the semantics beneath agent graphs.
 
+```text
+npx skills add wyw-ai/actor-circuit
+```
+
 One Agent can plan, write code, search, or operate tools. Putting several Agents together, however, does not automatically create a system — so today's agent frameworks converge on the same picture: nodes that do work, edges that route between them, and state flowing along the edges.
 
 The picture shows how to draw a system. It does not say what an edge means. Is a message delivered, accepted, or committed to? Does a fan-in merge work results, or only observe completion signals? Is a paused branch alive, or stalled forever? Actor Circuit exists to make those meanings precise.
+
+![From agent graph to actor circuit](docs/images/graph-to-circuit.png)
 
 Imagine a small product-brainstorming team:
 
@@ -21,6 +27,8 @@ Clarify the problem
 Replace product brainstorming with coding, incident response, travel planning, or customer support and some details change immediately: the participants, inputs, tools, and acceptance criteria are different. Remove those business-specific details, however, and the underlying relationships remain familiar. Work still continues, branches, fans out, converges, calls, delegates, transfers, waits, resumes, and stops.
 
 We call these operations **collaboration logic gates**. Connect them around collaboration state and Actors begin to form a circuit. Stateful circuits also retain facts such as the current continuation, owner, pending request/response or outcome boundary, waiting condition, work-result reference, convergence signal, and round.
+
+![The twelve collaboration logic gates](docs/images/gate-to-circuit.png)
 
 ## Not only Agents
 
@@ -63,7 +71,7 @@ The Actor foundation and L0 form the defined conceptual core. L1 now has an expe
 
 ## Skill
 
-[Actor Circuit](skills/actor-circuit/SKILL.md) gives a capable AI Agent this domain model without prescribing a step-by-step workflow.
+[Actor Circuit](skills/actor-circuit/SKILL.md) gives a capable AI Agent this domain model without prescribing a step-by-step workflow. It does not hand your agent a standard workflow to follow; it teaches the agent to assemble the right circuit at runtime, gate by gate.
 
 Its references contain:
 
